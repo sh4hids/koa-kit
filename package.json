@@ -1,0 +1,26 @@
+{
+  "name": "koa-kit",
+  "version": "0.1.0",
+  "description": "A simple koajs starter kit",
+  "main": "app.js",
+  "scripts": {
+    "start": "node server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sh4hids/koa-kit.git"
+  },
+  "keywords": [
+    "koajs",
+    "koa",
+    "nodejs",
+    "node",
+    "javascript"
+  ],
+  "author": "Shahidul Islam Majumder <hello@shahid.pro>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sh4hids/koa-kit/issues"
+  },
+  "homepage": "https://github.com/sh4hids/koa-kit#readme"
+}
