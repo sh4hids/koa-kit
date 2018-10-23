@@ -5,13 +5,14 @@ const Cors = require('@koa/cors');
 const BodyParser = require('koa-bodyparser');
 const Helmet = require('koa-helmet');
 const respond = require('koa-respond');
+const env = process.env.NODE_ENV || 'development';
 
 const app = new Koa();
 const router = new Router();
 
 app.use(Helmet());
 
-if (process.env.NODE_ENV === 'development') {
+if (env === 'development') {
   app.use(Logger());
 }
 
