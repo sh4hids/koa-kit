@@ -1,0 +1,9 @@
+{
+    "extends": "airbnb-base",
+    "rules": {
+      "no-unused-vars": ["error", { "argsIgnorePattern": "next" }],
+      "import/no-extraneous-dependencies": ["error", { "argsIgnorePattern": "chalk" }],
+      "no-console": 0,
+      "func-names": 0
+    }
+}
