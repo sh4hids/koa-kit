@@ -26,7 +26,7 @@ async function getUserById(ctx, next) {
 }
 
 async function getAllUsers(ctx, next) {
-  ctx.body = {
+  ctx.ok({
     success: true,
     data: {
       total: 2,
@@ -46,7 +46,7 @@ async function getAllUsers(ctx, next) {
         },
       ],
     },
-  };
+  });
 }
 
 module.exports = {
