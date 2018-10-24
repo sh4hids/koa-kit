@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node ./bin/server",
-    "dev": "nodemon ./bin/server"
+    "dev": "nodemon ./bin/server",
+    "docz:dev": "docz dev",
+    "docz:build": "docz build"
   },
   "repository": {
     "type": "git",
@@ -35,6 +37,7 @@
     "koa-router": "^7.4.0"
   },
   "devDependencies": {
+    "docz": "^0.12.5",
     "nodemon": "^1.18.4"
   }
 }
