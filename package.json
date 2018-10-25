@@ -4,7 +4,10 @@
   "description": "A simple koajs starter kit",
   "main": "app.js",
   "scripts": {
-    "start": "node server"
+    "start": "node ./bin/server",
+    "dev": "nodemon ./bin/server",
+    "docz:dev": "docz dev",
+    "docz:build": "docz build"
   },
   "repository": {
     "type": "git",
@@ -22,5 +25,19 @@
   "bugs": {
     "url": "https://github.com/sh4hids/koa-kit/issues"
   },
-  "homepage": "https://github.com/sh4hids/koa-kit#readme"
+  "homepage": "https://github.com/sh4hids/koa-kit#readme",
+  "dependencies": {
+    "@koa/cors": "^2.2.2",
+    "chalk": "^2.4.1",
+    "koa": "^2.6.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-helmet": "^4.0.0",
+    "koa-logger": "^3.2.0",
+    "koa-respond": "^2.1.0",
+    "koa-router": "^7.4.0"
+  },
+  "devDependencies": {
+    "docz": "^0.12.5",
+    "nodemon": "^1.18.4"
+  }
 }
