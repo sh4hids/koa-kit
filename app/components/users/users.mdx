@@ -1,0 +1,56 @@
+---
+name: Users
+route: /docs/v1/users
+---
+
+# Users
+
+## Create New User
+This route is used to create a new user and it will return an object of newly created user.
+
+#### Route (post)
+```
+https://koa-kit.com/api/v1/users
+```
+
+#### Parameters
+| name      | Type   | Description                                    |
+| --------- | ------ | ---------------------------------------------  |
+| firstName | String | _Required_. The first name of the user.        |
+| lastName  | String | _Required_. The last name of the user.         |
+| email     | String | _Required_. A valid email address.             |
+| password  | String | _Required_. A password of minimum length of 6. |
+
+## Get All Users
+
+This API route will return a list of users
+
+#### Route (get)
+```
+https://koa-kit.com/api/v1/users
+```
+
+#### Response Example
+```
+{
+	"success": true,
+	"data": {
+		"total": 2,
+		"page": 1,
+		"perPage": 10,
+		"hasMore": false,
+		"users": [
+			{
+				"name": "Shahidul Islam Majumder",
+				"username": "sh4hids",
+				"email": "hello@shahid.pro"
+			},
+			{
+				"name": "Saiful Islam Majumder",
+				"username": "shafu",
+				"email": "hello@shafu.pro"
+			}
+		]
+	}
+}
+```
