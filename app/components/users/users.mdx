@@ -21,6 +21,20 @@ https://koa-kit.com/api/v1/users
 | email     | String | _Required_. A valid email address.             |
 | password  | String | _Required_. A password of minimum length of 6. |
 
+#### Response Example
+```
+{
+	"success": true,
+	"message": "User created successfully!",
+	"data": {
+		"firstName": "Shahidul",
+		"lastName": "Islam",
+		"email": "hello@xyz.com",
+		"password": "123456"
+	}
+}
+```
+
 ## Get All Users
 
 This API route will return a list of users
@@ -43,12 +57,12 @@ https://koa-kit.com/api/v1/users
 			{
 				"name": "Shahidul Islam Majumder",
 				"username": "sh4hids",
-				"email": "hello@shahid.pro"
+				"email": "hello@xyz.pro"
 			},
 			{
 				"name": "Saiful Islam Majumder",
 				"username": "shafu",
-				"email": "hello@shafu.pro"
+				"email": "hi@xyz.pro"
 			}
 		]
 	}
