@@ -34,7 +34,8 @@
     "koa-helmet": "^4.0.0",
     "koa-logger": "^3.2.0",
     "koa-respond": "^2.1.0",
-    "koa-router": "^7.4.0"
+    "koa-router": "^7.4.0",
+    "mongoose": "^5.3.7"
   },
   "devDependencies": {
     "docz": "^0.12.5",

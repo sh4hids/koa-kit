@@ -6,6 +6,7 @@ const BodyParser = require('koa-bodyparser');
 const Helmet = require('koa-helmet');
 const respond = require('koa-respond');
 const env = process.env.NODE_ENV || 'development';
+const db = require('./app/config/db.config');
 
 const app = new Koa();
 const router = new Router();
