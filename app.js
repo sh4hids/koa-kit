@@ -5,11 +5,17 @@ const Cors = require('@koa/cors');
 const BodyParser = require('koa-bodyparser');
 const Helmet = require('koa-helmet');
 const respond = require('koa-respond');
+const session = require('koa-session');
+const passport = require('koa-passport');
 const env = process.env.NODE_ENV || 'development';
+const CONFIG = require('./app/config')[env];
 const db = require('./app/config/db.config');
 
 const app = new Koa();
 const router = new Router();
+
+app.keys = CONFIG.sessionKey;
+app.use(session({}, app));
 
 app.use(Helmet());
 
@@ -28,6 +34,9 @@ app.use(
     },
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(respond());
 

@@ -6,11 +6,13 @@ const CONFIG = {
   development: {
     db: KEYS.mongodb || 'mongodb://127.0.0.1/koakit',
     port: 8000,
+    sessionKey: KEYS.sessionKey,
   },
 
   production: {
     db: KEYS.mongodb,
     port: 8080,
+    sessionKey: KEYS.sessionKey,
   },
 };
 
