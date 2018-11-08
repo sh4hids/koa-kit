@@ -14,7 +14,7 @@ const db = require('./app/config/db.config');
 const app = new Koa();
 const router = new Router();
 
-app.keys = CONFIG.sessionKey;
+app.keys = [CONFIG.sessionKey];
 app.use(session({}, app));
 
 app.use(Helmet());
@@ -35,6 +35,7 @@ app.use(
   })
 );
 
+require('./app/helpers/passport');
 app.use(passport.initialize());
 app.use(passport.session());
 
