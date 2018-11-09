@@ -3,8 +3,8 @@ const passport = require('koa-passport');
 const router = new Router();
 const controller = require('./auth.controller');
 
+router.get('/login', controller.showLogInPage);
 router.post('/login', controller.logIn);
-
 router.get('/logout', controller.logOut);
 
 module.exports = router.routes();

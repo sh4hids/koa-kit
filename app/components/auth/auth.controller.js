@@ -1,5 +1,11 @@
 const passport = require('koa-passport');
 
+async function showLogInPage(ctx, next) {
+  ctx.body = {
+    message: "You're in log in page",
+  };
+}
+
 async function logIn(ctx, next) {
   return passport.authenticate('local', async (err, user, info) => {
     if (user === false) {
@@ -30,4 +36,4 @@ async function logOut(ctx) {
   }
 }
 
-module.exports = { logIn, logOut };
+module.exports = { showLogInPage, logIn, logOut };

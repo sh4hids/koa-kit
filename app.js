@@ -42,7 +42,8 @@ app.use(passport.session());
 app.use(respond());
 
 // API routes
-require('./app/routes/')(router);
+require('./app/routes/root.route')(router);
+require('./app/routes/api-v1.route')(router);
 app.use(router.routes());
 app.use(router.allowedMethods());
 
