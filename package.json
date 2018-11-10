@@ -29,9 +29,11 @@
   "dependencies": {
     "@koa/cors": "^2.2.2",
     "chalk": "^2.4.1",
+    "jsonwebtoken": "^8.3.0",
     "koa": "^2.6.0",
     "koa-bodyparser": "^4.2.1",
     "koa-helmet": "^4.0.0",
+    "koa-jwt": "^3.5.1",
     "koa-logger": "^3.2.0",
     "koa-passport": "^4.1.1",
     "koa-respond": "^2.1.0",

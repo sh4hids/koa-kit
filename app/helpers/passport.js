@@ -30,6 +30,7 @@ passport.use(
     fetchUser()
       .then(user => {
         if (username === user.username && password === user.password) {
+          user.verified = true;
           done(null, user);
         } else {
           done(null, false);
