@@ -1,5 +1,5 @@
 const passport = require('koa-passport');
-const jwt = require('jsonwebtoken');
+const { initToken } = require('../../helpers/jwt');
 
 async function showLogInPage(ctx, next) {
   ctx.body = {
@@ -17,7 +17,7 @@ async function logIn(ctx, next) {
         ctx.body = info.message;
       } else {
         try {
-          const token = jwt.sign(user, 'your_jwt_secret');
+          const token = initToken({ user });
           ctx.body = {
             token,
           };
