@@ -1,12 +1,41 @@
 const User = require('./users.model');
 
 async function createUser(ctx, next) {
-  const newUser = ctx.request.body;
-  ctx.body = {
-    success: true,
-    message: 'User created successfully!',
-    data: newUser,
-  };
+  const { email, password } = ctx.request.body;
+  if (email && password) {
+    try {
+      const user = await User.findOne({ email: data.email });
+      if (user) {
+        ctx.status = 409;
+        return (ctx.body = {
+          message: 'Email already exists',
+          status: 409,
+        });
+      } else {
+        let newUser = new User();
+
+        newUser.email = email;
+        newUser.password = await newUser.generateHash(password);
+        newUser.save();
+      }
+    } catch (err) {
+      ctx.status = 500;
+      return (ctx.body = {
+        errors: [
+          {
+            message: err.message,
+            status: 500,
+          },
+        ],
+      });
+    }
+  } else {
+    ctx.status = 422;
+    ctx.body = {
+      message: 'User created successfully!',
+      status: 422,
+    };
+  }
 }
 
 async function getUserById(ctx, next) {
