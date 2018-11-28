@@ -29,7 +29,7 @@ userSchema.methods.generateHash = async function(password) {
 };
 
 // Check if password is valid
-userSchema.methods.validPassword = async function(password) {
+userSchema.methods.validatePassword = async function(password) {
   try {
     return await bcrypt.compareSync(password, this.password);
   } catch (err) {

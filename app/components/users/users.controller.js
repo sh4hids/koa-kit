@@ -4,7 +4,7 @@ async function createUser(ctx, next) {
   const { email, password } = ctx.request.body;
   if (email && password) {
     try {
-      const user = await User.findOne({ email: data.email });
+      const user = await User.findOne({ email: email });
       if (user) {
         ctx.status = 409;
         return (ctx.body = {
@@ -13,20 +13,21 @@ async function createUser(ctx, next) {
         });
       } else {
         let newUser = new User();
-
         newUser.email = email;
         newUser.password = await newUser.generateHash(password);
-        newUser.save();
+        const user = await newUser.save();
+        console.log(u);
+        ctx.status = 201;
+        ctx.body = {
+          status: 201,
+          data: 'User created successfully.',
+        };
       }
     } catch (err) {
       ctx.status = 500;
       return (ctx.body = {
-        errors: [
-          {
-            message: err.message,
-            status: 500,
-          },
-        ],
+        message: err.message,
+        status: 500,
       });
     }
   } else {
