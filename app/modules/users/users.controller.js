@@ -16,12 +16,12 @@ async function createUser(ctx, next) {
         newUser.email = email;
         newUser.password = await newUser.generateHash(password);
         const user = await newUser.save();
-        console.log(u);
         ctx.status = 201;
         ctx.body = {
           status: 201,
           data: 'User created successfully.',
         };
+        return ctx.login(user);
       }
     } catch (err) {
       ctx.status = 500;

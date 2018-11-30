@@ -1,6 +1,6 @@
 const env = process.env.NODE_ENV || 'development';
 const passport = require('koa-passport');
-const { User } = require('../components/users');
+const { User } = require('../modules/users');
 const CONFIG = require('../config')[env];
 
 passport.serializeUser(function(user, done) {
@@ -24,14 +24,13 @@ passport.use(
   new LocalStrategy(localOpts, async (email, password, done) => {
     try {
       const user = await User.findOne({ email });
-
-      if (!user || !User.validatePassword(password)) {
-        return done(null, false);
+      if (!user || (await !user.validatePassword(password))) {
+        done(null, false);
       }
-      user.varified = true;
-      return done(null, user);
+      // user.varified = true;
+      done(null, user);
     } catch (err) {
-      return done(err, false);
+      done(err, false);
     }
   })
 );
