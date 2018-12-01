@@ -42,6 +42,7 @@ passport.use(
       clientID: CONFIG.authKeys.facebook.clientId,
       clientSecret: CONFIG.authKeys.facebook.clientSecret,
       callbackURL: `http://localhost:8000/auth/facebook/redirect`,
+      profileFields: ['id', 'displayName', 'emails'],
     },
     async (token, tokenSecret, profile, done) => {
       // retrieve user ...
@@ -53,9 +54,11 @@ passport.use(
         if (!user) {
           const newUser = new User();
           newUser.name = profile.displayName;
+          newUser.email = profile.emails[0].value;
           newUser.facebook.id = profile.id;
-          newUser.facebook.name = profile.displayName;
           newUser.facebook.token = token;
+          newUser.facebook.email = profile.emails[0].value;
+          newUser.facebook.name = profile.displayName;
 
           const userData = await newUser.save();
           done(null, userData);

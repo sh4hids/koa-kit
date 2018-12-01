@@ -40,6 +40,7 @@ async function handleFacebookLogIn(ctx, next) {
         success: false,
       };
     } else {
+      ctx.login(user);
       ctx.body = {
         success: true,
         message: "You're successfully logged in.",

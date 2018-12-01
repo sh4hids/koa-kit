@@ -9,10 +9,12 @@ const userSchema = new Schema({
   email: {
     type: String,
     unique: true,
+    sparse: true,
   },
   username: {
     type: String,
     unique: true,
+    sparse: true,
   },
   facebook: {
     id: String,

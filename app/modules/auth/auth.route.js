@@ -5,7 +5,10 @@ const controller = require('./auth.controller');
 
 router.post('/login', controller.logIn);
 router.post('/logout', controller.logOut);
-router.get('/facebook', passport.authenticate('facebook'));
+router.get(
+  '/facebook',
+  passport.authenticate('facebook', { scope: ['email'] })
+);
 router.post('/twitter', passport.authenticate('twitter'));
 router.post('/google', passport.authenticate('google'));
 router.get('/facebook/redirect', controller.handleFacebookLogIn);
