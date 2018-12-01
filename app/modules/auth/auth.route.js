@@ -3,8 +3,13 @@ const passport = require('koa-passport');
 const router = new Router();
 const controller = require('./auth.controller');
 
-router.get('/login', controller.showLogInPage);
 router.post('/login', controller.logIn);
-router.get('/logout', controller.logOut);
+router.post('/logout', controller.logOut);
+router.get('/facebook', passport.authenticate('facebook'));
+router.post('/twitter', passport.authenticate('twitter'));
+router.post('/google', passport.authenticate('google'));
+router.get('/facebook/redirect', controller.handleFacebookLogIn);
+router.get('/twitter/redirect', controller.handleTwitterLogIn);
+router.get('/google/redirect', controller.handleGoogleLogIn);
 
 module.exports = router.routes();

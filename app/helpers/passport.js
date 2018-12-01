@@ -17,11 +17,11 @@ passport.deserializeUser(async function(id, done) {
 });
 
 const LocalStrategy = require('passport-local').Strategy;
-const localOpts = {
+const localConfig = {
   usernameField: 'email',
 };
 passport.use(
-  new LocalStrategy(localOpts, async (email, password, done) => {
+  new LocalStrategy(localConfig, async (email, password, done) => {
     try {
       const user = await User.findOne({ email });
       if (!user || (await !user.validatePassword(password))) {
@@ -39,13 +39,32 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 passport.use(
   new FacebookStrategy(
     {
-      clientID: 'your-client-id',
-      clientSecret: 'your-secret',
-      callbackURL: `${CONFIG.clientHost}/auth/facebook/callback`,
+      clientID: CONFIG.authKeys.facebook.clientId,
+      clientSecret: CONFIG.authKeys.facebook.clientSecret,
+      callbackURL: `http://localhost:8000/auth/facebook/redirect`,
     },
-    function(token, tokenSecret, profile, done) {
+    async (token, tokenSecret, profile, done) => {
       // retrieve user ...
-      fetchUser().then(user => done(null, user));
+
+      try {
+        const user = await User.findOne({
+          'facebook.id': profile.id,
+        });
+        if (!user) {
+          const newUser = new User();
+          newUser.name = profile.displayName;
+          newUser.facebook.id = profile.id;
+          newUser.facebook.name = profile.displayName;
+          newUser.facebook.token = token;
+
+          const userData = await newUser.save();
+          done(null, userData);
+        }
+
+        done(null, user);
+      } catch (err) {
+        done(err, false);
+      }
     }
   )
 );
@@ -54,9 +73,9 @@ const TwitterStrategy = require('passport-twitter').Strategy;
 passport.use(
   new TwitterStrategy(
     {
-      consumerKey: 'your-consumer-key',
-      consumerSecret: 'your-secret',
-      callbackURL: `${CONFIG.clientHost}/auth/twitter/callback`,
+      consumerKey: CONFIG.authKeys.twitter.clientId,
+      consumerSecret: CONFIG.authKeys.twitter.clientSecret,
+      callbackURL: `${CONFIG.clientHost}/auth/twitter/redirect`,
     },
     function(token, tokenSecret, profile, done) {
       // retrieve user ...
@@ -71,7 +90,7 @@ passport.use(
 //     {
 //       clientId: 'your-client-id',
 //       clientSecret: 'your-secret',
-//       callbackURL: `${CONFIG.clientHost}/auth/google/callback`,
+//       callbackURL: `${CONFIG.clientHost}/auth/google/redirect`,
 //     },
 //     function(token, tokenSecret, profile, done) {
 //       // retrieve user ...

@@ -1,4 +1,4 @@
-const KEYS = require('./dummy.keys');
+const KEYS = require('./keys');
 const CONFIG = {
   development: {
     apiVersion: 'api/v1',
@@ -6,6 +6,7 @@ const CONFIG = {
     db: KEYS.mongodb || 'mongodb://127.0.0.1/koakit',
     port: 8000,
     sessionKey: KEYS.sessionKey,
+    authKeys: KEYS.authKeys,
   },
 
   production: {
@@ -14,6 +15,7 @@ const CONFIG = {
     db: KEYS.mongodb,
     port: 8080,
     sessionKey: KEYS.sessionKey,
+    authKeys: KEYS.authKeys,
   },
 };
 

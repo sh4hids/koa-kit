@@ -62,3 +62,6 @@ typings/
 
 # docz build output
 .docz
+
+# secret keys
+*/**/keys.*

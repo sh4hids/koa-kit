@@ -14,9 +14,24 @@ const userSchema = new Schema({
     type: String,
     unique: true,
   },
-  facebookId: String,
-  googleId: String,
-  githubId: String,
+  facebook: {
+    id: String,
+    token: String,
+    name: String,
+    email: String,
+  },
+  twitter: {
+    id: String,
+    token: String,
+    name: String,
+    username: String,
+  },
+  google: {
+    id: String,
+    token: String,
+    name: String,
+    email: String,
+  },
 });
 
 // Generate password hash
