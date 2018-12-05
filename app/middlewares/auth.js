@@ -10,8 +10,6 @@ const ensureAuthenticated = async function(ctx, next) {
 };
 
 const ensureAdmin = async function(ctx, next) {
-  console.log(ctx.state.user.email);
-  console.log(ctx.isAuthenticated(), ctx.state.user.role);
   if (!ctx.isAuthenticated() || ctx.state.user.role !== 'admin') {
     ctx.throw(401, 'You are not authorized to access this content.');
   }

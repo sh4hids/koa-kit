@@ -7,21 +7,20 @@ const dbOptions = {
   createIndexes: true,
 };
 
-const db = mongoose
-  .connect(
-    CONFIG.db,
-    dbOptions
-  )
-  .then(
-    () => {
-      console.log('✓ MongoDB connected successfuly.');
-    },
-    err => {
-      if (err) {
-        console.log('MongoDB Connection Error: ', err);
-        //process.exit();
-      }
-    }
-  );
+async function connectDB() {
+  try {
+    const database = await mongoose.connect(
+      CONFIG.db,
+      dbOptions
+    );
+    console.log('✓ MongoDB connected successfuly.');
+    return database;
+  } catch (err) {
+    console.log('MongoDB Connection Error: ', err);
+    process.exit();
+  }
+}
+
+const db = connectDB();
 
 module.exports = db;
