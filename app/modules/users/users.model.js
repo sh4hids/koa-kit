@@ -16,6 +16,11 @@ const userSchema = new Schema({
     unique: true,
     sparse: true,
   },
+  role: {
+    type: String,
+    enum: ['admin', 'moderator', 'general'],
+    default: 'general',
+  },
   facebook: {
     id: String,
     token: String,

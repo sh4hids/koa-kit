@@ -44,13 +44,9 @@ async function getUserById(ctx, next) {
   ctx.body = {
     success: true,
     data: {
-      success: true,
-      message: 'User created successfully!',
-      data: {
-        name: 'Shahidul Islam Majumder',
-        username: 'sh4hids',
-        email: 'hello@shahid.pro',
-      },
+      name: 'Shahidul Islam Majumder',
+      username: 'sh4hids',
+      email: 'hello@shahid.pro',
     },
   };
 }

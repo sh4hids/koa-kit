@@ -1,10 +1,10 @@
 const Router = require('koa-router');
 const router = new Router();
 const controller = require('./users.controller');
-const ensureAuthenticated = require('../../middlewares/auth');
+const { ensureAuthenticated, ensureAdmin } = require('../../middlewares/auth');
 
 router.post('/', controller.createUser);
-router.get('/', ensureAuthenticated, controller.getAllUsers);
-router.get('/:id', controller.getUserById);
+router.get('/', ensureAdmin, controller.getAllUsers);
+router.get('/:id', ensureAuthenticated, controller.getUserById);
 
 module.exports = router.routes();
