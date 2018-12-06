@@ -3,11 +3,11 @@ const passport = require('koa-passport');
 const { User } = require('../modules/users');
 const CONFIG = require('../config')[env];
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-passport.deserializeUser(async function(id, done) {
+passport.deserializeUser(async (id, done) => {
   try {
     const user = await User.findOne({ _id: id });
     done(null, user);
@@ -80,9 +80,14 @@ passport.use(
       consumerSecret: CONFIG.authKeys.twitter.clientSecret,
       callbackURL: `${CONFIG.clientHost}/auth/twitter/redirect`,
     },
-    function(token, tokenSecret, profile, done) {
+    async (token, tokenSecret, profile, done) => {
       // retrieve user ...
-      fetchUser().then(user => done(null, user));
+      try {
+        const user = await fetchUser();
+        done(null, user);
+      } catch (err) {
+        done(err, false);
+      }
     }
   )
 );
