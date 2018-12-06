@@ -40,7 +40,7 @@ async function createUser(ctx, next) {
 }
 
 async function getUserById(ctx, next) {
-  const userId = ctx.params.id;
+  const { userId } = ctx.params;
   ctx.body = {
     success: true,
     data: {

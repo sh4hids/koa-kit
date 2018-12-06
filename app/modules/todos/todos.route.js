@@ -5,6 +5,6 @@ const { ensureAuthenticated } = require('../../middlewares/auth');
 
 router.post('/', ensureAuthenticated, controller.createTodos);
 router.get('/', ensureAuthenticated, controller.getAllTodos);
-router.get('/:id', ensureAuthenticated, controller.getTodosById);
+router.get('/:taskId', ensureAuthenticated, controller.getTodosById);
 
 module.exports = router.routes();
