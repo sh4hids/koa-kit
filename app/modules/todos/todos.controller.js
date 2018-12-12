@@ -4,7 +4,6 @@ const User = require('../users/users.model');
 async function createTodos(ctx, next) {
   try {
     const { id } = ctx.state.user;
-    const { task, description } = ctx.request.body;
 
     const user = await User.findOne({ _id: id });
 
@@ -14,9 +13,7 @@ async function createTodos(ctx, next) {
         message: 'User not found',
       };
     } else {
-      const newTask = new Todo();
-      newTask.title = task;
-      newTask.description = description;
+      const newTask = new Todo(ctx.request.body);
       newTask.createdBy = id;
       const createdTask = await newTask.save();
 
@@ -41,7 +38,10 @@ async function getTodosById(ctx, next) {
     const { taskId } = ctx.params;
     const { id } = ctx.state.user;
 
-    const task = await Todo.findOne({ _id: taskId, createdBy: id });
+    const task = await Todo.findOne({ _id: taskId, createdBy: id }).populate({
+      path: 'createdBy',
+      select: 'name username',
+    });
 
     if (!task) {
       ctx.status = 404;
@@ -64,10 +64,81 @@ async function getTodosById(ctx, next) {
   }
 }
 
+async function updateTodos(ctx, next) {
+  try {
+    const { taskId } = ctx.params;
+    const { id } = ctx.state.user;
+    const { title, description } = ctx.request.body;
+
+    const task = await Todo.findOne({
+      _id: taskId,
+      createdBy: id,
+    });
+
+    if (!task) {
+      ctx.status = 404;
+      ctx.body = {
+        success: false,
+        message: 'Task not found',
+      };
+    } else {
+      task.title = title;
+      task.description = description;
+      const updatedTask = await task.save();
+      ctx.body = {
+        success: true,
+        data: updatedTask,
+      };
+    }
+  } catch (err) {
+    ctx.status = 500;
+    return (ctx.body = {
+      message: err.message,
+      status: 500,
+    });
+  }
+}
+
+async function toggleTodos(ctx, next) {
+  try {
+    const { taskId } = ctx.params;
+    const { id } = ctx.state.user;
+
+    const task = await Todo.findOne({
+      _id: taskId,
+      createdBy: id,
+    });
+
+    if (!task) {
+      ctx.status = 404;
+      ctx.body = {
+        success: false,
+        message: 'Task not found',
+      };
+    } else {
+      task.isDone = !task.isDone;
+      const toggledTask = await task.save();
+      ctx.body = {
+        success: true,
+        data: toggledTask,
+      };
+    }
+  } catch (err) {
+    ctx.status = 500;
+    return (ctx.body = {
+      message: err.message,
+      status: 500,
+    });
+  }
+}
+
 async function getAllTodos(ctx, next) {
   try {
     const { userId } = ctx.params;
-    const todos = await Todo.find({ createdBy: userId });
+    const todos = await Todo.find({ createdBy: userId }).populate({
+      path: 'createdBy',
+      select: 'name username',
+    });
     ctx.body = {
       success: true,
       data: todos,
@@ -84,5 +155,7 @@ async function getAllTodos(ctx, next) {
 module.exports = {
   createTodos,
   getTodosById,
+  updateTodos,
+  toggleTodos,
   getAllTodos,
 };
