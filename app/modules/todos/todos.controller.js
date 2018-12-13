@@ -1,7 +1,7 @@
 const Todo = require('./todos.model');
 const User = require('../users/users.model');
 
-async function createTodos(ctx, next) {
+async function createTodo(ctx, next) {
   try {
     const { id } = ctx.state.user;
 
@@ -33,7 +33,7 @@ async function createTodos(ctx, next) {
   }
 }
 
-async function getTodosById(ctx, next) {
+async function getTodoById(ctx, next) {
   try {
     const { taskId } = ctx.params;
     const { id } = ctx.state.user;
@@ -64,7 +64,7 @@ async function getTodosById(ctx, next) {
   }
 }
 
-async function updateTodos(ctx, next) {
+async function updateTodo(ctx, next) {
   try {
     const { taskId } = ctx.params;
     const { id } = ctx.state.user;
@@ -152,10 +152,43 @@ async function getAllTodos(ctx, next) {
   }
 }
 
+async function deleteTodo(ctx, next) {
+  try {
+    const { taskId } = ctx.params;
+    const { id } = ctx.state.user;
+
+    const deletedTask = await Todo.findOneAndDelete({
+      _id: taskId,
+      createdBy: id,
+    });
+
+    if (!deletedTask) {
+      ctx.status = 404;
+      ctx.body = {
+        success: false,
+        message: 'Task not found',
+      };
+    } else {
+      ctx.body = {
+        success: true,
+        message: 'Task deleted successfully',
+        data: deletedTask,
+      };
+    }
+  } catch (err) {
+    ctx.status = 500;
+    return (ctx.body = {
+      message: err.message,
+      status: 500,
+    });
+  }
+}
+
 module.exports = {
-  createTodos,
-  getTodosById,
-  updateTodos,
+  createTodo,
+  getTodoById,
+  updateTodo,
   toggleTodos,
   getAllTodos,
+  deleteTodo,
 };
