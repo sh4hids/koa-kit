@@ -1,0 +1,115 @@
+---
+name: Todos
+route: /docs/v1/todos
+---
+
+# Todos
+
+## Create New Todo
+This route is used to create a new todo task and it will return an object of newly created user.
+
+#### Route (`post`)
+```
+https://koa-kit.com/api/v1/todos
+```
+
+#### Parameters (`body`)
+| name      | Type   | Description                                    |
+| --------- | ------ | ---------------------------------------------  |
+| title | String | _Required_. The title of the task.        |
+| description  | String | _Optional_. The description of the task.         |
+| isDone     | Boolean | _Optional_. Current status of the task.             |
+
+#### Response Example
+```
+{
+  "success": true,
+  "message": "New task added successfully!",
+  "data": {
+    "isDone": false,
+    "_id": "5c11d51dfa01cb2807b01ca8",
+    "title": "Test task 32",
+    "description": "Lorem test description",
+    "createdBy": "5c07a44e1ec68b10b771b7c5",
+    "createdAt": "2018-12-13T03:42:21.366Z",
+    "updatedAt": "2018-12-13T03:42:21.366Z",
+    "__v": 0
+  }
+}
+```
+
+## Get All Todos
+
+This API route will return a list of users
+
+#### Route (`get`)
+```
+https://koa-kit.com/api/v1/users/:id/todos
+```
+
+#### Parameters
+| name      | Type   | Description                                    |
+| --------- | ------ | ---------------------------------------------  |
+| userId | String | _Required_. The id of the user.        |
+
+
+#### Response Example
+```
+{
+  "success": true,
+  "data": [
+    {
+      "isDone": false,
+      "_id": "5c08c4734e281f078bb8243a",
+      "title": "Test task 5",
+      "description": "Lorem test description 1",
+      "createdBy": {
+        "_id": "5c07a44e1ec68b10b771b7c5",
+        "name": "Shahid"
+      },
+      "createdAt": "2018-12-06T06:40:51.656Z",
+      "updatedAt": "2018-12-12T04:11:20.724Z",
+      "__v": 0
+    },
+    {
+      "isDone": false,
+      "_id": "5c08c54e4e281f078bb8243b",
+      "title": "Test task",
+      "description": "Lorem test description",
+      "createdBy": {
+        "_id": "5c07a44e1ec68b10b771b7c5",
+        "name": "Shahid"
+      },
+      "createdAt": "2018-12-06T06:44:30.057Z",
+      "updatedAt": "2018-12-06T06:44:30.057Z",
+      "__v": 0
+    },
+    {
+      "isDone": false,
+      "_id": "5c10892d42ceaa34be8aa898",
+      "title": "Test task 2",
+      "description": "Lorem test description",
+      "createdBy": {
+        "_id": "5c07a44e1ec68b10b771b7c5",
+        "name": "Shahid"
+      },
+      "createdAt": "2018-12-12T04:06:05.996Z",
+      "updatedAt": "2018-12-12T04:06:05.996Z",
+      "__v": 0
+    },
+    {
+      "isDone": false,
+      "_id": "5c11d51dfa01cb2807b01ca8",
+      "title": "Test task 32",
+      "description": "Lorem test description",
+      "createdBy": {
+        "_id": "5c07a44e1ec68b10b771b7c5",
+        "name": "Shahid"
+      },
+      "createdAt": "2018-12-13T03:42:21.366Z",
+      "updatedAt": "2018-12-13T03:42:21.366Z",
+      "__v": 0
+    }
+  ]
+}
+```
