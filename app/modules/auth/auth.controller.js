@@ -9,9 +9,12 @@ async function logIn(ctx, next) {
         success: false,
       };
     } else {
+      let resUser = user;
+      delete resUser.password;
       ctx.body = {
         success: true,
         message: "You're successfully logged in.",
+        data: { resUser },
       };
       return ctx.login(user);
     }
