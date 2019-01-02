@@ -9,12 +9,14 @@ async function logIn(ctx, next) {
         success: false,
       };
     } else {
-      let resUser = user;
-      delete resUser.password;
+      const { _id, name, email, role } = user;
       ctx.body = {
         success: true,
         message: "You're successfully logged in.",
-        data: { resUser },
+        data: {
+          user: { _id, name, email, role },
+          token: ctx.session.passport.user,
+        },
       };
       return ctx.login(user);
     }

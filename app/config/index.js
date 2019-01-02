@@ -1,11 +1,14 @@
-const KEYS = require('./keys');
+const KEYS = require('./dummy.keys');
 const CONFIG = {
   development: {
     apiVersion: 'api/v1',
     clientHost: 'http://localhost:3000',
     db: KEYS.mongodb || 'mongodb://127.0.0.1/koakit',
     port: 8000,
-    sessionKey: KEYS.sessionKey,
+    session: {
+      key: KEYS.sessionKey,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    },
     authKeys: KEYS.authKeys,
   },
 
@@ -14,7 +17,10 @@ const CONFIG = {
     clientHost: 'http://koakit.com:3000',
     db: KEYS.mongodb,
     port: 8080,
-    sessionKey: KEYS.sessionKey,
+    session: {
+      key: KEYS.sessionKey,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    },
     authKeys: KEYS.authKeys,
   },
 };

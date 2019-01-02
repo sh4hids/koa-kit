@@ -1,5 +1,5 @@
 const KEYS = {
-  sessionKey: 'thisIsCamelCaseKey',
+  sessionKey: 'koakit:secret',
   authKeys: {
     facebook: {
       clientId: 'id',

@@ -14,8 +14,16 @@ const db = require('./app/config/db.config');
 const app = new Koa();
 const router = new Router();
 
-app.keys = [CONFIG.sessionKey];
-app.use(session({}, app));
+app.keys = [CONFIG.session.key];
+app.use(
+  session(
+    {
+      key: CONFIG.session.key,
+      maxAge: CONFIG.session.maxAge,
+    },
+    app
+  )
+);
 
 app.use(Helmet());
 
