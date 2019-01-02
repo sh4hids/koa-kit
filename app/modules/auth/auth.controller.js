@@ -1,4 +1,5 @@
 const passport = require('koa-passport');
+const jwt = require('../../helpers/jwt');
 
 async function logIn(ctx, next) {
   return passport.authenticate('local', async (err, user, info) => {
@@ -15,7 +16,7 @@ async function logIn(ctx, next) {
         message: "You're successfully logged in.",
         data: {
           user: { _id, name, email, role },
-          token: ctx.session.passport.user,
+          token: jwt.initToken({ _id }),
         },
       };
       return ctx.login(user);
