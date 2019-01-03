@@ -10,6 +10,10 @@ const CONFIG = {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     },
     authKeys: KEYS.authKeys,
+    jwt: {
+      secret: KEYS.jwtKey,
+      expiresIn: 7 * 24 * 60 * 60 * 1000,
+    },
   },
 
   production: {
@@ -22,6 +26,10 @@ const CONFIG = {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     },
     authKeys: KEYS.authKeys,
+    jwt: {
+      secret: KEYS.jwtKey,
+      expiresIn: 7 * 24 * 60 * 60 * 1000,
+    },
   },
 };
 

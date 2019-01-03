@@ -1,28 +1,39 @@
 const passport = require('koa-passport');
-const jwt = require('../../helpers/jwt');
+const { initToken, jwtSession } = require('../../helpers/jwt');
 
 async function logIn(ctx, next) {
-  return passport.authenticate('local', async (err, user, info) => {
-    if (user === false) {
-      ctx.status = 401;
-      ctx.body = {
-        status: 401,
-        success: false,
-        message: 'Email or password not correct',
-      };
-    } else {
-      const { _id, name, email, role } = user;
-      ctx.body = {
-        success: true,
-        message: "You're successfully logged in.",
-        data: {
-          user: { _id, name, email, role },
-          token: jwt.initToken({ _id }),
-        },
-      };
-      return ctx.login(user);
+  return passport.authenticate(
+    'local',
+    jwtSession(),
+    async (err, user, info) => {
+      if (user === false) {
+        ctx.status = 401;
+        ctx.body = {
+          status: 401,
+          success: false,
+          message: 'Email or password not correct',
+        };
+      } else {
+        console.log(user);
+
+        const { _id, name, email, role } = user;
+        const token = initToken({
+          _id,
+          name,
+          role,
+        });
+        ctx.body = {
+          success: true,
+          message: "You're successfully logged in.",
+          data: {
+            user: { _id, name, role },
+            token,
+          },
+        };
+        return ctx.login(user);
+      }
     }
-  })(ctx, next);
+  )(ctx, next);
 }
 
 async function logOut(ctx) {

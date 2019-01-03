@@ -14,6 +14,7 @@ const KEYS = {
       clientSecret: 'secret',
     },
   },
+  jwtKey: 'veryS3cr3t',
 };
 
 module.exports = KEYS;
