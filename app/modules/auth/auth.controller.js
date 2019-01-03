@@ -8,6 +8,7 @@ async function logIn(ctx, next) {
       ctx.body = {
         status: 401,
         success: false,
+        message: 'Email or password not correct',
       };
     } else {
       const { _id, name, email, role } = user;
