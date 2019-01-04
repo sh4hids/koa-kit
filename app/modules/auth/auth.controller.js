@@ -1,5 +1,9 @@
+const env = process.env.NODE_ENV || 'development';
+const CONFIG = require('../../config')[env];
 const passport = require('koa-passport');
-const { initToken, jwtSession } = require('../../helpers/jwt');
+const TokenBlacklist = require('./token-blacklist.model');
+const { User } = require('../users');
+const { initToken, jwtSession, verifyToken } = require('../../helpers/jwt');
 
 async function logIn(ctx, next) {
   return passport.authenticate(
@@ -14,13 +18,12 @@ async function logIn(ctx, next) {
           message: 'Email or password not correct',
         };
       } else {
-        console.log(user);
-
-        const { _id, name, email, role } = user;
+        const { _id, name, email, role, lastLogout } = user;
         const token = initToken({
           _id,
           name,
           role,
+          exp: Math.floor(Date.now() / 1000 + CONFIG.jwt.expiresIn),
         });
         ctx.body = {
           success: true,
@@ -30,22 +33,29 @@ async function logIn(ctx, next) {
             token,
           },
         };
-        return ctx.login(user);
       }
     }
   )(ctx, next);
 }
 
 async function logOut(ctx) {
-  if (ctx.isAuthenticated()) {
-    ctx.logout();
+  try {
+    const userId = ctx.request.body.userId;
+    const token = ctx.request.header.authorization.split(' ')[1];
+    const tokenData = {
+      token,
+      createdBy: userId,
+    };
+    const invalidToken = new TokenBlacklist(tokenData);
+    await invalidToken.save();
+
     ctx.body = {
       success: true,
       message: "You've just logged out.",
     };
-  } else {
+  } catch (err) {
     ctx.body = { success: false };
-    ctx.throw(401);
+    ctx.throw(401, { message: 'You are not logged in' });
   }
 }
 
@@ -104,10 +114,30 @@ async function handleGoogleLogIn(ctx, next) {
   })(ctx, next);
 }
 
+async function deleteExpiredToken() {
+  try {
+    console.log(`✓ Deleting expired tokens at ${new Date().toISOString()}`);
+    const allTokens = await TokenBlacklist.find({});
+    if (allTokens.length) {
+      allTokens.map(async token => {
+        const verified = verifyToken(token.token);
+        if (!verified._id && !verified.isValid) {
+          await TokenBlacklist.findOneAndDelete({
+            _id: token._id,
+          });
+        }
+      });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 module.exports = {
   logIn,
   logOut,
   handleGoogleLogIn,
   handleFacebookLogIn,
   handleTwitterLogIn,
+  deleteExpiredToken,
 };

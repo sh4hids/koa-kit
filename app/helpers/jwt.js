@@ -10,8 +10,7 @@ function JWTErrorHandler(ctx, next) {
       ctx.status = 401;
       ctx.body = {
         success: false,
-        message: err.message,
-        data: {},
+        message: err.message || 'Authentication error',
       };
     } else {
       throw err;
@@ -19,11 +18,23 @@ function JWTErrorHandler(ctx, next) {
   });
 }
 
-module.exports.jwt = () => jwtInstance;
-module.exports.errorHandler = () => JWTErrorHandler;
+module.exports.jwt = jwtInstance;
+module.exports.jwtErrorHandler = () => JWTErrorHandler;
 module.exports.initToken = payload => {
-  return jsonwebtoken.sign(payload, CONFIG.jwt.secret, {
-    expiresIn: CONFIG.jwt.expiresIn,
-  });
+  return jsonwebtoken.sign(payload, CONFIG.jwt.secret);
 };
+
+module.exports.verifyToken = token => {
+  try {
+    return jsonwebtoken.verify(token, CONFIG.jwt.secret, (err, decoded) => {
+      if (err) {
+        ctx.throw(401);
+      }
+      return decoded;
+    });
+  } catch (err) {
+    return { isValid: false, message: 'Invalid token' };
+  }
+};
+
 module.exports.jwtSession = () => ({ session: false });

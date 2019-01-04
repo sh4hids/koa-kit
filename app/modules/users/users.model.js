@@ -39,6 +39,10 @@ const userSchema = new Schema({
     name: String,
     email: String,
   },
+  lastLogout: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 // Generate password hash

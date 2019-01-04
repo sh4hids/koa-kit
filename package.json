@@ -30,6 +30,7 @@
     "@koa/cors": "^2.2.2",
     "bcrypt-nodejs": "0.0.3",
     "chalk": "^2.4.1",
+    "cron": "^1.6.0",
     "jsonwebtoken": "^8.3.0",
     "koa": "^2.6.0",
     "koa-bodyparser": "^4.2.1",

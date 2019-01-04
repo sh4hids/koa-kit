@@ -6,12 +6,6 @@ const { todoRoute } = require('../modules/todos');
 
 module.exports = router => {
   router.use(`/${apiVersion}/`, require('../modules/api/v1'));
-  router
-    .use(errorHandler())
-    .use(jwt())
-    .use(`/${apiVersion}/users`, userRoute);
-  router
-    .use(errorHandler())
-    .use(jwt())
-    .use(`/${apiVersion}/todos`, todoRoute);
+  router.use(`/${apiVersion}/users`, userRoute);
+  router.use(`/${apiVersion}/todos`, todoRoute);
 };

@@ -1,6 +1,7 @@
 const User = require('./users.model');
 
 async function createUser(ctx, next) {
+  console.log('Hello');
   const { email, password } = ctx.request.body;
   if (email && password) {
     try {

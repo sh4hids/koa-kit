@@ -2,6 +2,7 @@ const Router = require('koa-router');
 const passport = require('koa-passport');
 const router = new Router();
 const controller = require('./auth.controller');
+const { jwt, errorHandler } = require('../../helpers/jwt');
 
 router.post('/login', controller.logIn);
 router.post('/logout', controller.logOut);

@@ -10,6 +10,10 @@ const passport = require('koa-passport');
 const env = process.env.NODE_ENV || 'development';
 const CONFIG = require('./app/config')[env];
 const db = require('./app/config/db.config');
+const { jwtErrorHandler } = require('./app/helpers/jwt');
+const { deleteExpiredToken } = require('./app/helpers/cron-jobs');
+
+deleteExpiredToken.start();
 
 const app = new Koa();
 const router = new Router();
@@ -48,6 +52,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(respond());
+app.use(jwtErrorHandler());
 
 // API routes
 require('./app/routes/root.route')(router);
