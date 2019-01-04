@@ -1,5 +1,5 @@
 const { jwt, verifyToken } = require('../helpers/jwt');
-const { TokenBlacklist } = require('../modules/auth');
+const TokenBlacklist = require('../modules/auth/token-blacklist.model');
 
 const isAuthenticated = async function(ctx, next) {
   try {
