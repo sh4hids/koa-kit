@@ -24,11 +24,11 @@ passport.use(
   new LocalStrategy(localConfig, async (email, password, done) => {
     try {
       const user = await User.findOne({ email });
-      if (!user || (await !user.validatePassword(password))) {
+      if (!user || !(await user.validatePassword(password))) {
         done(null, false);
+      } else {
+        done(null, user);
       }
-      // user.varified = true;
-      done(null, user);
     } catch (err) {
       done(err, false);
     }
