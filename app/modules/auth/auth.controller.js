@@ -40,8 +40,9 @@ async function logIn(ctx, next) {
 
 async function logOut(ctx) {
   try {
-    const userId = ctx.request.body.userId;
     const token = ctx.request.header.authorization.split(' ')[1];
+    const userData = verifyToken(token);
+    const userId = userData._id;
     const tokenData = {
       token,
       createdBy: userId,
