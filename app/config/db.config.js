@@ -1,5 +1,5 @@
 const env = process.env.NODE_ENV || 'development';
-const CONFIG = require('./index')[env];
+const config = require('./config')[env];
 const mongoose = require('mongoose');
 
 const dbOptions = {
@@ -9,10 +9,7 @@ const dbOptions = {
 
 async function connectDB() {
   try {
-    const database = await mongoose.connect(
-      CONFIG.db,
-      dbOptions
-    );
+    const database = await mongoose.connect(config.db, dbOptions);
     console.log('✓ MongoDB connected successfuly.');
     return database;
   } catch (err) {
