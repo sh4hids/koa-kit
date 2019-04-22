@@ -1,78 +1,84 @@
 const User = require('./users.model');
+const { generatePaginationQuery } = require('../../helpers/query-helpers');
 
 async function createUser(ctx, next) {
-  console.log('Hello');
-  const { email, password } = ctx.request.body;
+  const { email, password, name } = ctx.request.body;
+
   if (email && password) {
     try {
       const user = await User.findOne({ email: email });
       if (user) {
-        ctx.status = 409;
+        ctx.status = 400;
         return (ctx.body = {
-          message: 'Email already exists',
-          status: 409,
+          errors: [
+            {
+              message: 'Email already exixts',
+            },
+          ],
         });
       } else {
-        let newUser = new User();
-        newUser.email = email;
-        newUser.password = await newUser.generateHash(password);
-        const user = await newUser.save();
+        let user = new User({
+          email,
+          password,
+          name,
+        });
+        const newUser = await user.save();
+        let result = { ...newUser._doc };
+        delete result.password;
+
         ctx.status = 201;
-        ctx.body = {
-          status: 201,
-          data: 'User created successfully.',
-        };
-        return ctx.login(user);
+        ctx.body = result;
+
+        return ctx.login(newUser);
       }
     } catch (err) {
       ctx.status = 500;
+      console.log(err);
       return (ctx.body = {
-        message: err.message,
-        status: 500,
+        errors: [
+          {
+            message: err.message,
+          },
+        ],
       });
     }
   } else {
-    ctx.status = 422;
+    ctx.status = 400;
+    let errors = [];
+    if (!email) errors.push({ message: 'Email is required' });
+    if (!password) errors.push({ message: 'Password is required' });
     ctx.body = {
-      message: 'User created successfully!',
-      status: 422,
+      errors,
     };
   }
 }
 
 async function getUserById(ctx, next) {
-  const { userId } = ctx.params;
-  ctx.body = {
-    success: true,
-    data: {
-      name: 'Shahidul Islam Majumder',
-      username: 'sh4hids',
-      email: 'hello@shahid.pro',
-    },
-  };
+  const { id } = ctx.params;
+  const user = await User.findById(id).select('name email createdAt');
+  ctx.body = user;
 }
 
 async function getAllUsers(ctx, next) {
+  const { limit, page } = ctx.request.query;
+  const count = await User.countDocuments();
+
+  const pagination = generatePaginationQuery({
+    limit,
+    page,
+    count,
+    path: '/users',
+  });
+
+  const results = await User.find({})
+    .skip(pagination.offset)
+    .limit(pagination.limit)
+    .select('name email createdAt');
   ctx.ok({
-    success: true,
-    data: {
-      total: 2,
-      page: 1,
-      perPage: 10,
-      hasMore: false,
-      users: [
-        {
-          name: 'Shahidul Islam Majumder',
-          username: 'sh4hids',
-          email: 'hello@shahid.pro',
-        },
-        {
-          name: 'Saiful Islam Majumder',
-          username: 'shafu',
-          email: 'hello@shafu.pro',
-        },
-      ],
-    },
+    count,
+    results,
+    previous: pagination.previous,
+    next: pagination.next,
   });
 }
 

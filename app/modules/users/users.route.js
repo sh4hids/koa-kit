@@ -6,7 +6,6 @@ const { isAuthenticated, isAdmin } = require('../../middlewares/auth');
 
 router.post('/', controller.createUser);
 router.get('/', controller.getAllUsers);
-router.get('/:userId', isAuthenticated, controller.getUserById);
-router.get('/:userId/todos', isAuthenticated, todoController.getAllTodos);
+router.get('/:id', controller.getUserById);
 
 module.exports = router.routes();
