@@ -63,5 +63,5 @@ typings/
 # docz build output
 .docz
 
-# secret keys
-*/**/keys.*
+# config
+app/config/config.js

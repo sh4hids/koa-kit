@@ -5,7 +5,7 @@ const todoController = require('../todos/todos.controller');
 const { isAuthenticated, isAdmin } = require('../../middlewares/auth');
 
 router.post('/', controller.createUser);
-router.get('/', isAuthenticated, isAdmin, controller.getAllUsers);
+router.get('/', controller.getAllUsers);
 router.get('/:userId', isAuthenticated, controller.getUserById);
 router.get('/:userId/todos', isAuthenticated, todoController.getAllTodos);
 

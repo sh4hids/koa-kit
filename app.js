@@ -8,7 +8,7 @@ const respond = require('koa-respond');
 const session = require('koa-session');
 const passport = require('koa-passport');
 const env = process.env.NODE_ENV || 'development';
-const CONFIG = require('./app/config')[env];
+const config = require('./app/config');
 const db = require('./app/config/db.config');
 const { jwtErrorHandler } = require('./app/helpers/jwt');
 const { deleteExpiredToken } = require('./app/helpers/cron-jobs');
@@ -18,12 +18,12 @@ deleteExpiredToken.start();
 const app = new Koa();
 const router = new Router();
 
-app.keys = [CONFIG.session.key];
+app.keys = [config.session.key];
 app.use(
   session(
     {
-      key: CONFIG.session.key,
-      maxAge: CONFIG.session.maxAge,
+      key: config.session.key,
+      maxAge: config.session.maxAge,
     },
     app
   )

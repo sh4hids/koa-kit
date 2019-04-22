@@ -1,8 +1,7 @@
-const env = process.env.NODE_ENV || 'development';
-const CONFIG = require('../config')[env];
+const config = require('../config');
 const jwt = require('koa-jwt');
 const jsonwebtoken = require('jsonwebtoken');
-const jwtInstance = jwt({ secret: CONFIG.jwt.secret });
+const jwtInstance = jwt({ secret: config.jwt.secret });
 
 function JWTErrorHandler(ctx, next) {
   return next().catch(err => {
@@ -21,12 +20,12 @@ function JWTErrorHandler(ctx, next) {
 module.exports.jwt = jwtInstance;
 module.exports.jwtErrorHandler = () => JWTErrorHandler;
 module.exports.initToken = payload => {
-  return jsonwebtoken.sign(payload, CONFIG.jwt.secret);
+  return jsonwebtoken.sign(payload, config.jwt.secret);
 };
 
 module.exports.verifyToken = token => {
   try {
-    return jsonwebtoken.verify(token, CONFIG.jwt.secret, (err, decoded) => {
+    return jsonwebtoken.verify(token, config.jwt.secret, (err, decoded) => {
       if (err) {
         ctx.throw(401);
       }

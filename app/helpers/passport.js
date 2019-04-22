@@ -1,7 +1,7 @@
 const env = process.env.NODE_ENV || 'development';
 const passport = require('koa-passport');
 const { User } = require('../modules/users');
-const CONFIG = require('../config')[env];
+const config = require('../config');
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -39,9 +39,9 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 passport.use(
   new FacebookStrategy(
     {
-      clientID: CONFIG.authKeys.facebook.clientId,
-      clientSecret: CONFIG.authKeys.facebook.clientSecret,
-      callbackURL: `http://localhost:8000/auth/facebook/redirect`,
+      clientID: config.passport.facebook.clientId,
+      clientSecret: config.passport.facebook.clientSecret,
+      callbackURL: config.passport.facebook.callbackURL,
       profileFields: ['id', 'displayName', 'emails'],
     },
     async (token, tokenSecret, profile, done) => {
@@ -76,9 +76,9 @@ const TwitterStrategy = require('passport-twitter').Strategy;
 passport.use(
   new TwitterStrategy(
     {
-      consumerKey: CONFIG.authKeys.twitter.clientId,
-      consumerSecret: CONFIG.authKeys.twitter.clientSecret,
-      callbackURL: `${CONFIG.clientHost}/auth/twitter/redirect`,
+      consumerKey: config.passport.twitter.clientId,
+      consumerSecret: config.passport.twitter.clientSecret,
+      callbackURL: config.passport.twitter.callbackURL,
     },
     async (token, tokenSecret, profile, done) => {
       // retrieve user ...
