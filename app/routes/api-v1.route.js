@@ -5,7 +5,7 @@ const { userRoute } = require('../modules/users');
 const { todoRoute } = require('../modules/todos');
 
 module.exports = router => {
-  router.use(`/${api}/`, require('../modules/api/v1'));
-  router.use(`/${api}/users`, userRoute);
-  router.use(`/${api}/todos`, todoRoute);
+  router.use(`${api}/`, require('../modules/api/v1'));
+  router.use(`${api}/users`, userRoute);
+  router.use(`${api}/todos`, todoRoute);
 };

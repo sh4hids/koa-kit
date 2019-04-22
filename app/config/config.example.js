@@ -1,13 +1,26 @@
 module.exports = {
   development: {
-    api: '/api/v1',
-    client: 'http://localhost:3000',
-    server: 'http://localhost:8000',
-    db: 'mongodb://127.0.0.1/koakit',
+    api: 'API_VERSION',
+    client: 'CLIENT_URL',
+    serverHost: 'SERVER_HOST',
+    serverPort: 'SERVER_PORT',
+    db: 'DB_URL',
     passport: {
-      facebook: {},
-      google: {},
-      github: {},
+      facebook: {
+        clientId: '',
+        clientSecret: '',
+        callbackURL: '',
+      },
+      twitter: {
+        clientId: '',
+        clientSecret: '',
+        callbackURL: '',
+      },
+      google: {
+        clientId: '',
+        clientSecret: '',
+        callbackURL: '',
+      },
     },
     session: {
       key: '',
@@ -22,12 +35,25 @@ module.exports = {
   production: {
     api: 'API_VERSION',
     client: 'CLIENT_URL',
-    server: 'SERVER_URL',
+    serverHost: 'SERVER_HOST',
+    serverPort: 'SERVER_PORT',
     db: 'DB_URL',
     passport: {
-      facebook: {},
-      google: {},
-      github: {},
+      facebook: {
+        clientId: '',
+        clientSecret: '',
+        callbackURL: '',
+      },
+      twitter: {
+        clientId: '',
+        clientSecret: '',
+        callbackURL: '',
+      },
+      google: {
+        clientId: '',
+        clientSecret: '',
+        callbackURL: '',
+      },
     },
     session: {
       key: '',

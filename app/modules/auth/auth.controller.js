@@ -1,5 +1,5 @@
 const env = process.env.NODE_ENV || 'development';
-const CONFIG = require('../../config')[env];
+const config = require('../../config');
 const passport = require('koa-passport');
 const TokenBlacklist = require('./token-blacklist.model');
 const { User } = require('../users');
@@ -23,7 +23,7 @@ async function logIn(ctx, next) {
           _id,
           name,
           role,
-          exp: Math.floor(Date.now() / 1000 + CONFIG.jwt.expiresIn),
+          exp: Math.floor(Date.now() / 1000 + config.jwt.expiresIn),
         });
         ctx.body = {
           success: true,
