@@ -1,54 +1,25 @@
 const User = require('./users.model');
+const UserService = require('./user-service')(User);
 const { generatePaginationQuery } = require('../../helpers/query-helpers');
 
 async function createUser(ctx, next) {
-  const { email, password, name } = ctx.request.body;
+  try {
+    const newUser = await UserService.createUser(ctx.request.body);
+    let user = { ...newUser._doc };
+    delete user.password;
 
-  if (email && password) {
-    try {
-      const user = await User.findOne({ email: email });
-      if (user) {
-        ctx.status = 400;
-        return (ctx.body = {
-          errors: [
-            {
-              message: 'Email already exixts',
-            },
-          ],
-        });
-      } else {
-        let user = new User({
-          email,
-          password,
-          name,
-        });
-        const newUser = await user.save();
-        let result = { ...newUser._doc };
-        delete result.password;
-
-        ctx.status = 201;
-        ctx.body = result;
-
-        return ctx.login(newUser);
-      }
-    } catch (err) {
-      ctx.status = 500;
-      console.log(err);
-      return (ctx.body = {
-        errors: [
-          {
-            message: err.message,
-          },
-        ],
-      });
-    }
-  } else {
-    ctx.status = 400;
+    ctx.status = 201;
+    ctx.body = user;
+  } catch (e) {
     let errors = [];
-    if (!email) errors.push({ message: 'Email is required' });
-    if (!password) errors.push({ message: 'Password is required' });
+    if (e.message) {
+      errors = JSON.parse(e.message);
+    } else {
+      errors = [{ message: e }];
+    }
+    ctx.status = 400;
     ctx.body = {
-      errors,
+      error: errors,
     };
   }
 }
@@ -62,15 +33,15 @@ async function getUserById(ctx, next) {
 async function getAllUsers(ctx, next) {
   const { limit, page } = ctx.request.query;
   const count = await User.countDocuments();
-
   const pagination = generatePaginationQuery({
     limit,
     page,
     count,
     path: '/users',
   });
+  const query = {};
 
-  const results = await User.find({})
+  const results = await User.find(query)
     .skip(pagination.offset)
     .limit(pagination.limit)
     .select('name email createdAt');
