@@ -1,5 +1,6 @@
 const User = require('./users.model');
 const UserService = require('./user-service')(User);
+const { isJSON } = require('../../helpers/object-helpers');
 const { generatePaginationQuery } = require('../../helpers/query-helpers');
 
 async function createUser(ctx, next) {
@@ -11,11 +12,11 @@ async function createUser(ctx, next) {
     ctx.status = 201;
     ctx.body = user;
   } catch (e) {
-    let errors = [];
-    if (e.message) {
+    let errors = {};
+    if (isJSON(e.message)) {
       errors = JSON.parse(e.message);
     } else {
-      errors = [{ message: e }];
+      errors = { none_field_error: [e.message] };
     }
     ctx.status = 400;
     ctx.body = {
