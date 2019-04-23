@@ -1,78 +1,56 @@
 const User = require('./users.model');
+const UserService = require('./user-service')(User);
+const { isJSON } = require('../../helpers/object-helpers');
+const { generatePaginationQuery } = require('../../helpers/query-helpers');
 
 async function createUser(ctx, next) {
-  console.log('Hello');
-  const { email, password } = ctx.request.body;
-  if (email && password) {
-    try {
-      const user = await User.findOne({ email: email });
-      if (user) {
-        ctx.status = 409;
-        return (ctx.body = {
-          message: 'Email already exists',
-          status: 409,
-        });
-      } else {
-        let newUser = new User();
-        newUser.email = email;
-        newUser.password = await newUser.generateHash(password);
-        const user = await newUser.save();
-        ctx.status = 201;
-        ctx.body = {
-          status: 201,
-          data: 'User created successfully.',
-        };
-        return ctx.login(user);
-      }
-    } catch (err) {
-      ctx.status = 500;
-      return (ctx.body = {
-        message: err.message,
-        status: 500,
-      });
+  try {
+    const newUser = await UserService.createUser(ctx.request.body);
+    let user = { ...newUser._doc };
+    delete user.password;
+
+    ctx.status = 201;
+    ctx.body = user;
+  } catch (e) {
+    let errors = {};
+    if (isJSON(e.message)) {
+      errors = JSON.parse(e.message);
+    } else {
+      errors = { none_field_error: [e.message] };
     }
-  } else {
-    ctx.status = 422;
+    ctx.status = 400;
     ctx.body = {
-      message: 'User created successfully!',
-      status: 422,
+      error: errors,
     };
   }
 }
 
 async function getUserById(ctx, next) {
-  const { userId } = ctx.params;
-  ctx.body = {
-    success: true,
-    data: {
-      name: 'Shahidul Islam Majumder',
-      username: 'sh4hids',
-      email: 'hello@shahid.pro',
-    },
-  };
+  const { id } = ctx.params;
+  const user = await User.findById(id).select('name email createdAt');
+  ctx.body = user;
 }
 
 async function getAllUsers(ctx, next) {
+  const { limit, page } = ctx.request.query;
+  const count = await User.countDocuments();
+  const pagination = generatePaginationQuery({
+    limit,
+    page,
+    count,
+    path: '/users',
+  });
+  const query = {};
+
+  const results = await User.find(query)
+    .skip(pagination.offset)
+    .limit(pagination.limit)
+    .select('name email createdAt');
   ctx.ok({
-    success: true,
-    data: {
-      total: 2,
-      page: 1,
-      perPage: 10,
-      hasMore: false,
-      users: [
-        {
-          name: 'Shahidul Islam Majumder',
-          username: 'sh4hids',
-          email: 'hello@shahid.pro',
-        },
-        {
-          name: 'Saiful Islam Majumder',
-          username: 'shafu',
-          email: 'hello@shafu.pro',
-        },
-      ],
-    },
+    count,
+    results,
+    previous: pagination.previous,
+    next: pagination.next,
   });
 }
 
