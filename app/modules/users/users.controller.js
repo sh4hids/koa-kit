@@ -1,7 +1,6 @@
 const User = require('./users.model');
 const UserService = require('./user-service')(User);
 const { isJSON } = require('../../helpers/object-helpers');
-const { generatePaginationQuery } = require('../../helpers/query-helpers');
 
 async function createUser(ctx, next) {
   try {
@@ -33,25 +32,15 @@ async function getUserById(ctx, next) {
 
 async function getAllUsers(ctx, next) {
   const { limit, page } = ctx.request.query;
-  const count = await User.countDocuments();
-  const pagination = generatePaginationQuery({
-    limit,
-    page,
-    count,
-    path: '/users',
-  });
-  const query = {};
-
-  const results = await User.find(query)
-    .skip(pagination.offset)
-    .limit(pagination.limit)
-    .select('name email createdAt');
-  ctx.ok({
-    count,
-    results,
-    previous: pagination.previous,
-    next: pagination.next,
-  });
+  try {
+    const data = await UserService.getUserList({ limit, page });
+    ctx.ok(data);
+  } catch (e) {
+    ctx.status = 500;
+    ctx.body = {
+      error: { server_error: [e.message] },
+    };
+  }
 }
 
 module.exports = {
