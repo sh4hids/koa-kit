@@ -1,3 +1,5 @@
+const { generatePaginationQuery } = require('../../helpers/query-helpers');
+
 const createUser = User => async ({ name, email, password }) => {
   if (name && email && password) {
     const user = await User.findOne({ email: email });
@@ -17,6 +19,39 @@ const createUser = User => async ({ name, email, password }) => {
   }
 };
 
+const getUserList = User => async ({ limit, page, query = {} }) => {
+  const count = await User.countDocuments();
+  const pagination = generatePaginationQuery({
+    limit,
+    page,
+    count,
+    path: '/users',
+  });
+
+  try {
+    const results = await User.find(query)
+      .skip(pagination.offset)
+      .limit(pagination.limit)
+      .select('name email createdAt');
+
+    return new Promise((resolve, reject) => {
+      resolve({
+        count,
+        results,
+        previous: pagination.previous,
+        next: pagination.next,
+      });
+    });
+  } catch (e) {
+    return new Promise((resolve, reject) => {
+      reject(e);
+    });
+  }
+};
+
 module.exports = User => {
-  return { createUser: createUser(User) };
+  return {
+    createUser: createUser(User),
+    getUserList: getUserList(User),
+  };
 };
