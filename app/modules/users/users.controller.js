@@ -1,6 +1,8 @@
+const config = require('../../config');
 const User = require('./users.model');
 const UserService = require('./user-service')(User);
 const { isJSON } = require('../../helpers/object-helpers');
+const { initToken } = require('../../helpers/jwt');
 
 async function createUser(ctx, next) {
   try {
@@ -8,8 +10,17 @@ async function createUser(ctx, next) {
     let user = { ...newUser._doc };
     delete user.password;
 
-    ctx.status = 201;
-    ctx.body = user;
+    const token = initToken({
+      _id: user._id,
+      name: user.name,
+      role: user.role,
+      exp: Math.floor(Date.now() / 1000 + config.jwt.expiresIn),
+    });
+
+    ctx.ok({
+      user,
+      token,
+    });
   } catch (e) {
     let errors = {};
     if (isJSON(e.message)) {
@@ -19,7 +30,7 @@ async function createUser(ctx, next) {
     }
     ctx.status = 400;
     ctx.body = {
-      error: errors,
+      errors: errors,
     };
   }
 }
@@ -38,7 +49,7 @@ async function getAllUsers(ctx, next) {
   } catch (e) {
     ctx.status = 500;
     ctx.body = {
-      error: { server_error: [e.message] },
+      errors: { server_error: [e.message] },
     };
   }
 }
