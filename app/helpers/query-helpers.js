@@ -2,7 +2,6 @@ const { serverHost, serverPort, api } = require('../config');
 const apiPath = `${serverHost}:${serverPort}${api}`;
 
 const generatePaginationQuery = ({ limit, page, count, path }) => {
-  console.log(page);
   limit = limit ? parseInt(limit) : 8;
   page = page ? parseInt(page) : 1;
 

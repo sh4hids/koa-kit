@@ -1,4 +1,3 @@
-const env = process.env.NODE_ENV || 'development';
 const config = require('../../config');
 const passport = require('koa-passport');
 const TokenBlacklist = require('./token-blacklist.model');
@@ -13,9 +12,9 @@ async function logIn(ctx, next) {
       if (user === false) {
         ctx.status = 401;
         ctx.body = {
-          status: 401,
-          success: false,
-          message: 'Email or password not correct',
+          errors: {
+            auth_error: ['Email or password not correct'],
+          },
         };
       } else {
         const { _id, name, email, role, lastLogout } = user;
@@ -25,14 +24,10 @@ async function logIn(ctx, next) {
           role,
           exp: Math.floor(Date.now() / 1000 + config.jwt.expiresIn),
         });
-        ctx.body = {
-          success: true,
-          message: "You're successfully logged in.",
-          data: {
-            user: { _id, name, role },
-            token,
-          },
-        };
+        ctx.ok({
+          user: { _id, name, role },
+          token,
+        });
       }
     }
   )(ctx, next);
@@ -41,22 +36,24 @@ async function logIn(ctx, next) {
 async function logOut(ctx) {
   try {
     const token = ctx.request.header.authorization.split(' ')[1];
-    const userData = verifyToken(token);
-    const userId = userData._id;
-    const tokenData = {
-      token,
-      createdBy: userId,
-    };
-    const invalidToken = new TokenBlacklist(tokenData);
-    await invalidToken.save();
+    const invalidToken = await TokenBlacklist.findOne({ token: token });
 
-    ctx.body = {
-      success: true,
-      message: "You've just logged out.",
-    };
+    if (!invalidToken) {
+      const userData = verifyToken(token);
+      const userId = userData._id;
+      const tokenData = {
+        token,
+        createdBy: userId,
+      };
+      const invalidToken = new TokenBlacklist(tokenData);
+      await invalidToken.save();
+    }
+
+    ctx.ok({
+      message: 'Successfully logged out',
+    });
   } catch (err) {
-    ctx.body = { success: false };
-    ctx.throw(401, { message: 'You are not logged in' });
+    ctx.throw(401, { message: 'Invalid token' });
   }
 }
 
@@ -65,15 +62,15 @@ async function handleFacebookLogIn(ctx, next) {
     if (user === false) {
       ctx.status = 401;
       ctx.body = {
-        status: 401,
-        success: false,
+        errors: {
+          auth_error: ['Authentication failed'],
+        },
       };
     } else {
       ctx.login(user);
-      ctx.body = {
-        success: true,
-        message: "You're successfully logged in.",
-      };
+      ctx.ok({
+        message: 'Successfully logged out',
+      });
       return ctx.login(user);
     }
   })(ctx, next);
@@ -84,14 +81,14 @@ async function handleTwitterLogIn(ctx, next) {
     if (user === false) {
       ctx.status = 401;
       ctx.body = {
-        status: 401,
-        success: false,
+        errors: {
+          auth_error: ['Authentication failed'],
+        },
       };
     } else {
-      ctx.body = {
-        success: true,
-        message: "You're successfully logged in.",
-      };
+      ctx.ok({
+        message: 'Successfully logged out',
+      });
       return ctx.login(user);
     }
   })(ctx, next);
@@ -102,14 +99,14 @@ async function handleGoogleLogIn(ctx, next) {
     if (user === false) {
       ctx.status = 401;
       ctx.body = {
-        status: 401,
-        success: false,
+        errors: {
+          auth_error: ['Authentication failed'],
+        },
       };
     } else {
-      ctx.body = {
-        success: true,
-        message: "You're successfully logged in.",
-      };
+      ctx.ok({
+        message: 'Successfully logged out',
+      });
       return ctx.login(user);
     }
   })(ctx, next);

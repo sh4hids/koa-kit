@@ -6,7 +6,7 @@ const isAuthenticated = async function(ctx, next) {
     const token = ctx.request.header.authorization.split(' ')[1];
     const invalidToken = await TokenBlacklist.findOne({ token: token });
     if (invalidToken) {
-      ctx.throw(401, { message: 'Invalid token' });
+      ctx.throw(401, { message: 'Authorization error' });
     }
     return jwt(ctx, next);
   } catch (err) {
@@ -15,15 +15,18 @@ const isAuthenticated = async function(ctx, next) {
 };
 
 const isAdmin = async function(ctx, next) {
-  const token = ctx.request.header.authorization.split(' ')[1];
-  if (!token || verifyToken(token).role !== 'admin') {
-    ctx.throw(401, {
-      message:
-        verifyToken(token).message ||
-        'You are not authorized to access this content.',
-    });
+  try {
+    const token = ctx.request.header.authorization.split(' ')[1];
+    const invalidToken = await TokenBlacklist.findOne({ token: token });
+    const userData = verifyToken(token);
+    if (invalidToken || userData.role !== 'admin') {
+      ctx.throw(401, { message: 'Authorization error' });
+    }
+    ctx.state.user = userData;
+    return next();
+  } catch (err) {
+    ctx.throw(401, { message: err.message || 'Authorization error' });
   }
-  return next();
 };
 
 module.exports = {
