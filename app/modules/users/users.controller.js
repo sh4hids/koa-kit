@@ -37,8 +37,25 @@ async function createUser(ctx, next) {
 
 async function getUserById(ctx, next) {
   const { id } = ctx.params;
-  const user = await User.findById(id).select('name email createdAt');
-  ctx.body = user;
+  try {
+    const user = await UserService.getSingleUser(
+      { _id: id },
+      'name email createdAt'
+    );
+    if (user) {
+      ctx.ok(user);
+    } else {
+      ctx.status = 404;
+      ctx.body = {
+        errors: { not_found: ['User not found'] },
+      };
+    }
+  } catch (e) {
+    ctx.status = 500;
+    ctx.body = {
+      errors: { server_error: [e.message] },
+    };
+  }
 }
 
 async function getAllUsers(ctx, next) {

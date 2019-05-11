@@ -19,6 +19,23 @@ const createUser = User => async ({ name, email, password }) => {
   }
 };
 
+const getSingleUser = User => async (
+  query = {},
+  fileds = 'username name email'
+) => {
+  try {
+    console.log(query);
+    const user = await User.findOne(query).select(fileds);
+    return new Promise((resolve, reject) => {
+      resolve(user);
+    });
+  } catch (e) {
+    return new Promise((resolve, reject) => {
+      reject(e);
+    });
+  }
+};
+
 const getUserList = User => async ({ limit, page, query = {} }) => {
   const count = await User.countDocuments();
   const pagination = generatePaginationQuery({
@@ -52,6 +69,7 @@ const getUserList = User => async ({ limit, page, query = {} }) => {
 module.exports = User => {
   return {
     createUser: createUser(User),
+    getSingleUser: getSingleUser(User),
     getUserList: getUserList(User),
   };
 };
