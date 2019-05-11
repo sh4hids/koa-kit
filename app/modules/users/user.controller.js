@@ -1,6 +1,6 @@
 const config = require('../../config');
-const User = require('./users.model');
-const UserService = require('./user-service')(User);
+const User = require('./user.model');
+const UserService = require('./user.service')(User);
 const { isJSON } = require('../../helpers/object-helpers');
 const { initToken } = require('../../helpers/jwt');
 

@@ -1,6 +1,6 @@
-const User = require('./users.model');
-const userController = require('./users.controller');
-const userRoute = require('./users.route');
+const User = require('./user.model');
+const userController = require('./user.controller');
+const userRoute = require('./user.route');
 
 module.exports = {
   User,

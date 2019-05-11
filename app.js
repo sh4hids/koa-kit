@@ -9,7 +9,6 @@ const session = require('koa-session');
 const passport = require('koa-passport');
 const env = process.env.NODE_ENV || 'development';
 const config = require('./app/config');
-const db = require('./app/config/db.config');
 const { jwtErrorHandler } = require('./app/helpers/jwt');
 const { deleteExpiredToken } = require('./app/helpers/cron-jobs');
 
