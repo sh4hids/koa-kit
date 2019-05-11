@@ -1,5 +1,5 @@
 const Todo = require('./todos.model');
-const User = require('../users/users.model');
+const User = require('../users/user.model');
 
 async function createTodo(ctx, next) {
   try {

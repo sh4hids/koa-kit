@@ -4,10 +4,10 @@
   "description": "A simple koajs starter kit",
   "main": "app.js",
   "scripts": {
-    "start": "node ./bin/server",
-    "dev": "nodemon ./bin/server",
+    "start": "nodemon ./bin/server",
     "docz:dev": "docz dev",
-    "docz:build": "docz build"
+    "docz:build": "docz build",
+    "test": "jest ."
   },
   "repository": {
     "type": "git",
@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "docz": "^1.0.4",
+    "jest": "^24.8.0",
     "nodemon": "^1.18.11"
   }
 }
