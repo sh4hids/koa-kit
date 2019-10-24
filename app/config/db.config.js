@@ -1,12 +1,12 @@
-const env = process.env.NODE_ENV || 'development';
-const config = require('./config')[env];
 const mongoose = require('mongoose');
+const config = require('./');
 
 const dbOptions = {
   useNewUrlParser: true,
   createIndexes: true,
 };
 
+/* eslint-disable no-console */
 async function connectDB() {
   try {
     const database = await mongoose.connect(config.db, dbOptions);
@@ -15,6 +15,7 @@ async function connectDB() {
   } catch (err) {
     console.log('✗ MongoDB Connection Error: ', err);
     process.exit();
+    return false;
   }
 }
 

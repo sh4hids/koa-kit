@@ -1,18 +1,16 @@
-const { serverHost, serverPort, api } = require('../config');
-const apiPath = `${serverHost}:${serverPort}${api}`;
+const { appHost, appPort, apiVersion } = require('../config');
 
-const generatePaginationQuery = ({ limit, page, count, path }) => {
-  limit = limit ? parseInt(limit) : 8;
-  page = page ? parseInt(page) : 1;
+const apiPath = `${appHost}:${appPort}${apiVersion}`;
 
+const generatePaginationQuery = ({ limit = 0, page = 1, count = 0, path }) => {
   return {
     limit,
     offset: limit * (page - 1),
     previous:
-      page === 1 ? null : `${apiPath}${path}/?limit=${limit}&page=${page - 1}`,
+      page === 1 ? null : `${apiPath}/${path}/?limit=${limit}&page=${page - 1}`,
     next:
       count > limit * page
-        ? `${apiPath}${path}/?limit=${limit}&page=${page + 1}`
+        ? `${apiPath}/${path}/?limit=${limit}&page=${page + 1}`
         : null,
   };
 };

@@ -1,24 +1,25 @@
 const { jwt, verifyToken } = require('../helpers/jwt');
 const TokenBlacklist = require('../modules/auth/token-blacklist.model');
 
-const isAuthenticated = async function(ctx, next) {
+const isAuthenticated = async (ctx, next) => {
   try {
     const token = ctx.request.header.authorization.split(' ')[1];
-    const invalidToken = await TokenBlacklist.findOne({ token: token });
+    const invalidToken = await TokenBlacklist.findOne({ token });
     if (invalidToken) {
       ctx.throw(401, { message: 'Authorization error' });
     }
     return jwt(ctx, next);
   } catch (err) {
     ctx.throw(401, { message: err.message || 'Authorization error' });
+    return false;
   }
 };
 
-const isAdmin = async function(ctx, next) {
+const isAdmin = async (ctx, next) => {
   try {
     const token = ctx.request.header.authorization.split(' ')[1];
-    const invalidToken = await TokenBlacklist.findOne({ token: token });
-    const userData = verifyToken(token);
+    const invalidToken = await TokenBlacklist.findOne({ token });
+    const userData = verifyToken(ctx, token);
     if (invalidToken || userData.role !== 'admin') {
       ctx.throw(401, { message: 'Authorization error' });
     }
@@ -26,6 +27,7 @@ const isAdmin = async function(ctx, next) {
     return next();
   } catch (err) {
     ctx.throw(401, { message: err.message || 'Authorization error' });
+    return false;
   }
 };
 

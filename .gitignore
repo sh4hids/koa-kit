@@ -62,6 +62,3 @@ typings/
 
 # docz build output
 .docz
-
-# config
-app/config/config.js

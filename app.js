@@ -1,3 +1,4 @@
+require('dotenv').config();
 const Koa = require('koa');
 const Router = require('koa-router');
 const Logger = require('koa-logger');
@@ -7,7 +8,6 @@ const Helmet = require('koa-helmet');
 const respond = require('koa-respond');
 const session = require('koa-session');
 const passport = require('koa-passport');
-const env = process.env.NODE_ENV || 'development';
 const config = require('./app/config');
 const { jwtErrorHandler } = require('./app/helpers/jwt');
 const { deleteExpiredToken } = require('./app/helpers/cron-jobs');
@@ -30,7 +30,7 @@ app.use(
 
 app.use(Helmet());
 
-if (env === 'development') {
+if (config.appEnv === 'development') {
   app.use(Logger());
 }
 
@@ -40,13 +40,14 @@ app.use(
     enableTypes: ['json'],
     jsonLimit: '5mb',
     strict: true,
-    onerror: function(err, ctx) {
+    onerror(err, ctx) {
       ctx.throw('body parse error', 422);
     },
   })
 );
 
 require('./app/helpers/passport');
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -54,8 +55,9 @@ app.use(respond());
 app.use(jwtErrorHandler());
 
 // API routes
-require('./app/routes/root.route')(router);
-require('./app/routes/api-v1.route')(router);
+require('./app/routes/root.routes')(router);
+require('./app/routes/v1.routes')(router);
+
 app.use(router.routes());
 app.use(router.allowedMethods());
 

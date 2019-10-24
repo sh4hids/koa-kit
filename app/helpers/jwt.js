@@ -1,11 +1,12 @@
-const config = require('../config');
 const jwt = require('koa-jwt');
 const jsonwebtoken = require('jsonwebtoken');
+const config = require('../config');
+
 const jwtInstance = jwt({ secret: config.jwt.secret, key: 'user' });
 
 function JWTErrorHandler(ctx, next) {
   return next().catch(err => {
-    if (401 == err.status) {
+    if (err.status === 401) {
       ctx.status = 401;
       ctx.body = {
         errors: {
@@ -24,7 +25,7 @@ module.exports.initToken = payload => {
   return jsonwebtoken.sign(payload, config.jwt.secret);
 };
 
-module.exports.verifyToken = token => {
+module.exports.verifyToken = (ctx, token) => {
   try {
     return jsonwebtoken.verify(token, config.jwt.secret, (err, decoded) => {
       if (err) {
